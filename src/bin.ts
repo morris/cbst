@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { CacheBusterCli } from './CacheBusterCli';
 
 const cli = new CacheBusterCli();
