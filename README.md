@@ -22,7 +22,7 @@ cbst <input dir> <output dir> [<config file>]
 
 ## Example
 
-This diff demonstrates possible changes applied on a simple website:
+This diff demonstrates how versioning is applied on a simple website:
 
 ```diff
 # index.html
@@ -104,6 +104,8 @@ References are detected by scanning source files for quoted strings that
 If a reference can be resolved to a file, and that file is not `dynamic`,
 the reference is rewritten with the versioned filename.
 
+If a reference cannot be resolved to a file, the reference is not modified.
+
 ## Static vs. dynamic files
 
 **Static files** (not listed in `dynamic`) will be versioned based on a hash
@@ -139,7 +141,7 @@ See also
 
 ## Discussion
 
-_I can't use my favorite libraries from NPM with this because they require Node.js resolution and/or bundling._
+> I can't use my favorite libraries from NPM with this because they require Node.js resolution and/or bundling.
 
 Chicken & egg problem here.
 The industry got used to bundlers and started building libraries for the web
@@ -148,7 +150,7 @@ assuming that everyone uses a bundler.
 Ask library authors to ship standard ESM modules.
 That will make all our lives easier.
 
-_Isn't bundling still more performant larger websites?_
+> Isn't bundling still more performant larger websites?
 
 You should be fine if your website is delivered via HTTP/2 with compression and
 solid cache control.
@@ -163,13 +165,13 @@ but recurring users will have a better experience.
 Finally, avoiding frameworks and large dependencies is a much more effective
 optimization in the first place.
 
-_What about minification?_
+> What about minification?
 
 It's out of scope.
 There are too many options to consider,
 and any integration with minifiers will probably result in config/plug-in hell.
 
-_Why is this implemented with regular expressions? Everyone knows you can't parse HTML, CSS, and JS like that!!1_
+> Why is this implemented with regular expressions? Everyone knows you can't parse HTML, CSS, and JS like that!!1
 
 It's a trade-off.
 The RegExp-based implementation is simple, fast,
