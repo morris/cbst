@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Obscure HTML</title>
+    <link rel="stylesheet" href="./styles/main.css" />
+  </head>
+  <body>
+    <h1>"index.html"</h1>
+    <h2>"scripts/main.js"</h2>
+    <script type="module">
+      const refs = [
+        '<img src="./assets/test.svg">',
+        "<img src='./assets/test.svg'>",
+        '<img src="assets/test.svg">',
+        '<img src="assets//test.svg">',
+        '<img src=" assets/test.svg">',
+        '<img src="assets/test.svg ">',
+        '"./assets/test.svg"',
+        "'./assets/test.svg'",
+        'wut.jpg',
+        '404.js',
+        '.jpg',
+        '..jpg',
+        'test.',
+        'test..',
+        'test..jpg',
+      ];
+    </script>
+  </body>
+</html>
