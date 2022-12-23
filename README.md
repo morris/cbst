@@ -22,7 +22,7 @@ cbst <input dir> <output dir> [<config file>]
 
 ## Example
 
-This diff demonstrates how versioning is applied on a simple website:
+This diff demonstrates how versioning is applied to a simple website:
 
 ```diff
 # index.html
@@ -95,7 +95,7 @@ File patterns support `*` (slash-free wildcards) and `/**/` (directory wildcards
 ## Versioning and references
 
 As `cbst` transforms files, it also rewrites any references to other versioned files.
-References are detected by scanning source files for quoted strings that
+References are detected by scanning source files for **quoted strings** that
 
 - are double- or single-quoted,
 - contain no whitespace or quotes,
