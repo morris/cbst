@@ -25,20 +25,20 @@ cbst <input dir> <output dir> [<config file>]
 This diff demonstrates how versioning is applied to a simple website:
 
 ```diff
-# index.html
+# /index.html
 
   <!DOCTYPE html>
   <html>
     <head>
       <title>Hello, World!</title>
--     <link rel="stylesheet" href="styles/main.css">
-+     <link rel="stylesheet" href="styles/main.ed1e118152.css">
+-     <link rel="stylesheet" href="/styles/main.css">
++     <link rel="stylesheet" href="/styles/main.ed1e118152.css">
     </head>
     <body>
       <h1>Hello, World!</h1>
       <p>
--       <img id="welcome" src="assets/loading.png">
-+       <img id="welcome" src="assets/loading.834ab3df39.png">
+-       <img id="welcome" src="/assets/loading.svg">
++       <img id="welcome" src="/assets/loading.834ab3df39.svg">
       </p>
       <script type="module">
 -       import { main } from './scripts/main.js';
@@ -49,19 +49,19 @@ This diff demonstrates how versioning is applied to a simple website:
     </body>
   </html>
 
-# scripts/main.js -> scripts/main.f39e95e656.js
+# /scripts/main.js -> /scripts/main.f39e95e656.js
 
-- import { yell } from './yell.js';
-+ import { yell } from './yell.93724d33b5.js';
+- import { hello } from './hello.js';
++ import { hello } from './hello.93724d33b5.js';
 
   export function main() {
-    yell('hello');
--   document.getElementById('welcome').src = 'assets/welcome.svg';
-+   document.getElementById('welcome').src = 'assets/welcome.afe45bb832.svg';
+    hello('world');
+-   document.getElementById('welcome').src = '/assets/welcome.svg';
++   document.getElementById('welcome').src = '/assets/welcome.afe45bb832.svg';
   }
 
-# styles/main.css -> styles/main.ed1e118152.css
-# scripts/yell.js -> scripts/yell.93724d33b5.js
+# /styles/main.css -> /styles/main.ed1e118152.css
+# /scripts/hello.js -> /scripts/hello.93724d33b5.js
 # etc.
 ```
 

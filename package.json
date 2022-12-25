@@ -20,7 +20,7 @@
     "build": "tsc --project tsconfig.build.json",
     "clean": "rm -rf coverage dist test/fixtures/out",
     "lint": "eslint .",
-    "format": "pretter --write .",
+    "format": "prettier --write .",
     "format-check": "prettier --check .",
     "test": "jest --runInBand --coverage",
     "maybe-publish": "bash scripts/maybe-publish.sh"

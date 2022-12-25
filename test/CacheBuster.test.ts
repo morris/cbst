@@ -1,20 +1,31 @@
 import { CacheBuster } from '../src';
 
 describe('The Builder', () => {
+  const errors: Error[] = [];
   const options = {
-    inputDir: 'test/fixtures/public',
-    outputDir: 'test/fixtures/out',
+    inputDir: 'test/fixtures/all/in',
+    outputDir: 'test/fixtures/all/out',
   };
+
+  beforeEach(() => {
+    errors.length = 0;
+  });
 
   it('should be able to get the base of HTML files', async () => {
     const cb = new CacheBuster(options);
 
+    cb.on('error', (err) => errors.push(err));
+
     expect(await cb.getBase('index.html')).toEqual('.');
     expect(await cb.getBase('base/base.html')).toEqual('/');
+
+    expect(errors).toEqual([]);
   });
 
   it('should be able to get references of HTML files', async () => {
     const cb = new CacheBuster(options);
+
+    cb.on('error', (err) => errors.push(err));
 
     expect(await cb.getReferences('index.html')).toEqual([
       'styles/main.css',
@@ -27,10 +38,14 @@ describe('The Builder', () => {
       'assets/test.svg',
       'scripts/main.js',
     ]);
+
+    expect(errors).toEqual([]);
   });
 
   it('should be able to get references of JS files', async () => {
     const cb = new CacheBuster(options);
+
+    cb.on('error', (err) => errors.push(err));
 
     expect(await cb.getReferences('scripts/main.js')).toEqual([
       'scripts/lib.js',
@@ -42,10 +57,15 @@ describe('The Builder', () => {
     expect(await cb.getReferences('scripts/circular/a.js')).toEqual([
       'scripts/circular/b.js',
     ]);
+
+    expect(errors).toEqual([]);
   });
 
   it('should be able to transform HTML files', async () => {
     const cb = new CacheBuster(options);
+
+    cb.on('error', (err) => errors.push(err));
+
     const result = await cb.transformFile('index.html');
 
     expect(result.toString()).toEqual(
@@ -68,11 +88,35 @@ describe('The Builder', () => {
 </html>
 `
     );
+
+    expect(errors).toEqual([]);
   });
 
-  it('should be able to build', async () => {
+  it('should be able to run', async () => {
     const cb = new CacheBuster(options);
 
+    cb.on('error', (err) => errors.push(err));
+
     await cb.run();
+
+    expect(errors.map((err) => err.message)).toEqual([
+      'Could not resolve reference wut.jpg from obscure.html',
+      'Could not resolve reference 404.js from obscure.html',
+      'Could not resolve reference ..jpg from obscure.html',
+      'Could not resolve reference test..jpg from obscure.html',
+    ]);
+  });
+
+  it('should be able to run the example', async () => {
+    const cb = new CacheBuster({
+      inputDir: 'test/fixtures/example/in',
+      outputDir: 'test/fixtures/example/out',
+    });
+
+    cb.on('error', (err) => errors.push(err));
+
+    await cb.run();
+
+    expect(errors).toEqual([]);
   });
 });

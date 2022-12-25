@@ -1,8 +1,8 @@
 import { CacheBusterCli } from '../src';
 
 describe('The Cli', () => {
-  const inputDir = 'test/fixtures/public';
-  const outputDir = 'test/fixtures/out';
+  const inputDir = 'test/fixtures/all/in';
+  const outputDir = 'test/fixtures/all/out';
 
   const cli = new CacheBusterCli();
 
@@ -31,13 +31,16 @@ describe('The Cli', () => {
 
   it('should fail with invalid config', async () => {
     await expect(
-      cli.run([inputDir, outputDir, 'test/fixtures/config.invalid.json'], true)
+      cli.run(
+        [inputDir, outputDir, 'test/fixtures/all/config.invalid.json'],
+        true
+      )
     ).rejects.toThrow('"dynamic" must be an array of strings');
   });
 
   it('should run with valid config', async () => {
     await cli.run(
-      [inputDir, outputDir, 'test/fixtures/config.valid.json'],
+      [inputDir, outputDir, 'test/fixtures/all/config.valid.json'],
       true
     );
   });

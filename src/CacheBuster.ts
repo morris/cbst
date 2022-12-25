@@ -1,4 +1,5 @@
 import { createHash } from 'crypto';
+import EventEmitter from 'events';
 import { promises as fs } from 'fs';
 import { posix as path } from 'path';
 import { ReferenceError } from './ReferenceError';
@@ -54,16 +55,9 @@ export interface CacheBusterOptions extends CacheBusterConfig {
    * Output directory
    */
   outputDir: string;
-
-  /**
-   * Error handler
-   */
-  onError?: ErrorHandler;
 }
 
-export type ErrorHandler = (err: Error) => unknown;
-
-export class CacheBuster {
+export class CacheBuster extends EventEmitter {
   public static defaultConfig: Required<CacheBusterConfig> = {
     exclude: [],
     source: ['*.html', '*.css', '*.js', '*.svg'],
@@ -75,7 +69,6 @@ export class CacheBuster {
 
   protected inputDir: string;
   protected outputDir: string;
-  protected onError?: ErrorHandler;
   protected excludeGlob: Glob;
   protected sourceGlob: Glob;
   protected htmlGlob: Glob;
@@ -88,7 +81,8 @@ export class CacheBuster {
   protected hashRawFileCache = new Cache((file) => this.hashRawFile(file));
   protected readFileCache = new Cache((file) => this.readFile(file));
 
-  protected map: Record<string, string> = {};
+  protected map = new Map<string, string>();
+  protected unresolved = new Map<string, Set<string>>();
 
   protected referenceRx =
     /((")(([^"\s]+)\.([a-zA-Z0-9]+))")|((')(([^'\s]+)\.([a-zA-Z0-9]+))')/g;
@@ -96,11 +90,12 @@ export class CacheBuster {
   protected extensionRx = /(?<=\.)[^.]+$/;
 
   constructor(options: CacheBusterOptions) {
+    super();
+
     const o = { ...CacheBuster.defaultConfig, ...options };
 
     this.inputDir = o.inputDir;
     this.outputDir = o.outputDir;
-    this.onError = o.onError;
     this.excludeGlob = new Glob(o.exclude);
     this.sourceGlob = new Glob(o.source);
     this.htmlGlob = new Glob(o.html);
@@ -115,7 +110,10 @@ export class CacheBuster {
   }
 
   async writeManifest() {
-    await this.writeFile(this.manifest, JSON.stringify({ map: this.map }));
+    await this.writeFile(
+      this.manifest,
+      JSON.stringify({ map: Object.fromEntries(this.map.entries()) })
+    );
   }
 
   async handleDir(dir: string) {
@@ -146,7 +144,7 @@ export class CacheBuster {
         )
       : file;
 
-    this.map[file] = outputFile;
+    this.map.set(file, outputFile);
 
     await this.writeFile(outputFile, output);
 
@@ -219,7 +217,13 @@ export class CacheBuster {
     );
 
     const deep = await Promise.all(
-      references.map((it) => this.hashFileReferences(it, [...exclude, file]))
+      references.map((it) =>
+        this.hashFileReferences(it, [...exclude, file]).catch((err) => {
+          this.handleReferenceError(err, file, it);
+
+          return [];
+        })
+      )
     );
 
     return [...direct, ...deep.flat()];
@@ -231,10 +235,19 @@ export class CacheBuster {
     return this.hash([buffer]);
   }
 
-  handleReferenceError(err: Error, source: string, reference: string) {
-    if (this.onError) {
-      this.onError?.(new ReferenceError(err, source, reference));
+  handleReferenceError(error: Error, source: string, reference: string) {
+    let unresolved = this.unresolved.get(source);
+
+    if (!unresolved) {
+      unresolved = new Set();
+      this.unresolved.set(source, unresolved);
     }
+
+    if (unresolved.has(reference)) return;
+
+    unresolved.add(reference);
+
+    this.emit('error', new ReferenceError(error, source, reference));
   }
 
   // references

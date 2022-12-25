@@ -29,8 +29,9 @@ export class CacheBusterCli {
         ...config,
         inputDir,
         outputDir,
-        onError: (err) => this.console.error(`Warning: ${err.message}`),
       });
+
+      cacheBuster.on('error', (err) => this.console.error(err.message));
 
       await cacheBuster.run();
     } catch (err) {
