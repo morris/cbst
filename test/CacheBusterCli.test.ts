@@ -1,47 +1,53 @@
 import { CacheBusterCli } from '../src';
 
 describe('The Cli', () => {
-  const inputDir = 'test/fixtures/all/in';
-  const outputDir = 'test/fixtures/all/out';
+  const inputDir = 'test/fixtures/example/in';
+  const outputDir = 'test/fixtures/example/out';
 
   const cli = new CacheBusterCli();
 
   const mockLog = jest.spyOn(console, 'log').mockImplementation();
   const mockError = jest.spyOn(console, 'error').mockImplementation();
 
+  beforeEach(() => jest.resetAllMocks());
+
   it('should be able to run', async () => {
-    await cli.run([inputDir, outputDir], true);
+    expect(await cli.run([inputDir, outputDir])).toEqual(0);
   });
 
   it('should print usage if --help is passed', async () => {
-    await cli.run(['--help'], true);
+    expect(await cli.run(['--help'])).toEqual(0);
     expect(mockLog).toBeCalledWith(cli.help());
   });
 
   it('should fail if no arguments are given', async () => {
-    await expect(cli.run([], true)).rejects.toThrow('No input directory given');
+    expect(await cli.run([])).toEqual(1);
     expect(mockError).toBeCalledWith('No input directory given');
   });
 
   it('should fail if no output dir is given', async () => {
-    await expect(cli.run([inputDir], true)).rejects.toThrow(
-      'No output directory given'
-    );
+    expect(await cli.run([inputDir])).toEqual(1);
+    expect(mockError).toBeCalledWith('No output directory given');
   });
 
   it('should fail with invalid config', async () => {
-    await expect(
-      cli.run(
-        [inputDir, outputDir, 'test/fixtures/all/config.invalid.json'],
-        true
-      )
-    ).rejects.toThrow('"dynamic" must be an array of strings');
+    expect(
+      await cli.run([
+        inputDir,
+        outputDir,
+        'test/fixtures/all/config.invalid.json',
+      ])
+    ).toEqual(1);
+    expect(mockError).toBeCalledWith('"dynamic" must be an array of strings');
   });
 
   it('should run with valid config', async () => {
-    await cli.run(
-      [inputDir, outputDir, 'test/fixtures/all/config.valid.json'],
-      true
-    );
+    expect(
+      await cli.run([
+        inputDir,
+        outputDir,
+        'test/fixtures/all/config.valid.json',
+      ])
+    ).toEqual(0);
   });
 });

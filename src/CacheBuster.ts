@@ -3,7 +3,6 @@ import EventEmitter from 'events';
 import { promises as fs } from 'fs';
 import { posix as path } from 'path';
 import { ReferenceError } from './ReferenceError';
-import { assert } from './util/assert';
 import { Cache } from './util/Cache';
 import { Glob } from './util/Glob';
 
@@ -330,10 +329,11 @@ export class CacheBuster extends EventEmitter {
   safePath(rootDir: string, candidate: string) {
     const s = path.normalize(path.join(rootDir, candidate));
 
-    assert(
-      s.indexOf(rootDir) === 0,
-      `Trying to access file outside of ${rootDir}: ${candidate}`
-    );
+    if (s.indexOf(rootDir) !== 0) {
+      throw new Error(
+        `Trying to access file outside of ${rootDir}: ${candidate}`
+      );
+    }
 
     return s;
   }
