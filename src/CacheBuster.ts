@@ -9,7 +9,7 @@ import { Glob } from './util/Glob';
 export interface CacheBusterConfig {
   /**
    * List of file patterns to exclude entirely.
-   * Defaults to an `[]`.
+   * Defaults to `[]`.
    */
   exclude?: string[];
 

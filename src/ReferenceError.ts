@@ -6,8 +6,8 @@ export class ReferenceError extends Error {
   ) {
     super(
       originalError.code === 'ENOENT'
-        ? `Could not resolve reference ${reference} from ${source}`
-        : `Could not resolve reference ${reference} from ${source} (${originalError.message})`
+        ? `Could not resolve ${reference} from ${source}`
+        : `Could not resolve ${reference} from ${source} (${originalError.message})`
     );
   }
 }
