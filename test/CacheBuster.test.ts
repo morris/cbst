@@ -100,10 +100,10 @@ describe('The Builder', () => {
     await cb.run();
 
     expect(errors.map((err) => err.message)).toEqual([
-      'Could not resolve reference wut.jpg from obscure.html',
-      'Could not resolve reference 404.js from obscure.html',
-      'Could not resolve reference ..jpg from obscure.html',
-      'Could not resolve reference test..jpg from obscure.html',
+      'Could not resolve wut.jpg from obscure.html',
+      'Could not resolve 404.js from obscure.html',
+      'Could not resolve ..jpg from obscure.html',
+      'Could not resolve test..jpg from obscure.html',
     ]);
   });
 
