@@ -1,6 +1,6 @@
 {
   "name": "cbst",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "A cache buster that versions a website's files for immutable cache control",
   "author": "Morris Brodersen <mb@morrisbrodersen.de>",
   "license": "ISC",
