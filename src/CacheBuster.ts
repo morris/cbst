@@ -84,7 +84,7 @@ export class CacheBuster extends EventEmitter {
   protected unresolved = new Map<string, Set<string>>();
 
   protected referenceRx =
-    /((")(([^"\s]+)\.([a-zA-Z0-9]+))")|((')(([^'\s]+)\.([a-zA-Z0-9]+))')/g;
+    /((")(([^"\s]+)\.([a-zA-Z0-9]+))")|((')(([^'\s]+)\.([a-zA-Z0-9]+))')|# sourceMappingURL=(([^\s]+)\.([a-zA-Z0-9]+))/g;
   protected baseRx = /<base[^<>]+href\s*=\s*"([^"]+)"[^<>]*>/i;
   protected extensionRx = /(?<=\.)[^.]+$/;
 
@@ -175,15 +175,21 @@ export class CacheBuster extends EventEmitter {
 
     return source.replace(this.referenceRx, (match, ...groups) => {
       const quote = groups[1] || groups[6];
-      const reference = groups[2] || groups[7];
-      const filename = groups[3] || groups[8];
-      const extension = groups[4] || groups[9];
+      const reference = groups[2] || groups[7] || groups[10];
+      const filename = groups[3] || groups[8] || groups[11];
+      const extension = groups[4] || groups[9] || groups[12];
 
       if (!this.isReference(reference)) return match;
 
       const hash = hashes[i++];
 
       if (!hash) return match;
+
+      if (groups[10]) {
+        return `# sourceMappingURL=${filename}.${this.formatVersion(
+          hash
+        )}.${extension}`;
+      }
 
       return `${quote}${filename}.${this.formatVersion(
         hash
@@ -260,7 +266,7 @@ export class CacheBuster extends EventEmitter {
     const references: string[] = [];
 
     for (const match of source.matchAll(this.referenceRx)) {
-      const reference = match[3] || match[8];
+      const reference = match[3] || match[8] || match[11];
 
       if (this.isReference(reference)) {
         references.push(this.resolveReference(base, reference));
