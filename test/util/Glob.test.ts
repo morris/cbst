@@ -51,4 +51,13 @@ describe('A Glob', () => {
 
     expect(shouldNotMatch.filter((file) => glob.match(file))).toEqual([]);
   });
+
+  it('should not match files ending with given non-wildcard patterns', () => {
+    const glob = new Glob(['test.html']);
+
+    expect(glob.match('test.html')).toEqual(true);
+    expect(glob.match('foo/test.html')).toEqual(true);
+    expect(glob.match('mytest.html')).toEqual(false);
+    expect(glob.match('foo/mytest.html')).toEqual(false);
+  });
 });

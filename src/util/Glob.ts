@@ -26,7 +26,7 @@ export class Glob {
 
   protected compile(pattern: string): CompiledPattern {
     const inverted = !!pattern.match(/^!/);
-    const absolutePrefix = pattern.match(/^!?\//) ? '^' : '';
+    const prefix = pattern.match(/^!?\//) ? '^' : '(^|/)';
 
     const rxBase = pattern
       .slice(inverted ? 1 : 0)
@@ -47,7 +47,7 @@ export class Glob {
         }
       });
 
-    const rx = new RegExp(absolutePrefix + rxBase + '$');
+    const rx = new RegExp(prefix + rxBase + '$');
 
     return {
       inverted,
