@@ -1,6 +1,6 @@
 {
   "name": "cbst",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A cache buster that versions a website's files for immutable cache control",
   "keywords": [
     "versioning",
