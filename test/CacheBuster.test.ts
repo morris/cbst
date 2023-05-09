@@ -79,6 +79,7 @@ describe('The Builder', () => {
   <body>
     <h1>Test</h1>
     <p><img src="./assets/test.330398492f.svg" /></p>
+    <p><a href="mailto:foo@bar.cbst">Contact</a></p>
     <script type="module">
       import { main } from './scripts/main.f39e95e656.js';
 

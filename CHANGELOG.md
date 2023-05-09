@@ -1,5 +1,10 @@
 # Changelog
 
+# 0.2.1
+
+- Ignore `mailto:` and other protocols properly
+- Update deps
+
 # 0.2.0
 
 - Exit with code 1 on errors (including unresolved references)

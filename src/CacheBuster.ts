@@ -85,6 +85,7 @@ export class CacheBuster extends EventEmitter {
 
   protected referenceRx =
     /((")(([^"\s]+)\.([a-zA-Z0-9]+))")|((')(([^'\s]+)\.([a-zA-Z0-9]+))')|# sourceMappingURL=(([^\s]+)\.([a-zA-Z0-9]+))/g;
+  protected externalReferenceRx = /^([a-zA-Z0-9]+:|\/\/)/;
   protected baseRx = /<base[^<>]+href\s*=\s*"([^"]+)"[^<>]*>/i;
   protected extensionRx = /(?<=\.)[^.]+$/;
 
@@ -179,7 +180,7 @@ export class CacheBuster extends EventEmitter {
       const filename = groups[3] || groups[8] || groups[11];
       const extension = groups[4] || groups[9] || groups[12];
 
-      if (!this.isReference(reference)) return match;
+      if (!this.isResolvableReference(reference)) return match;
 
       const hash = hashes[i++];
 
@@ -268,7 +269,7 @@ export class CacheBuster extends EventEmitter {
     for (const match of source.matchAll(this.referenceRx)) {
       const reference = match[3] || match[8] || match[11];
 
-      if (this.isReference(reference)) {
+      if (this.isResolvableReference(reference)) {
         references.push(this.resolveReference(base, reference));
       }
     }
@@ -276,8 +277,8 @@ export class CacheBuster extends EventEmitter {
     return references;
   }
 
-  isReference(reference: string) {
-    return !reference.includes('//');
+  isResolvableReference(reference: string) {
+    return !reference.match(this.externalReferenceRx);
   }
 
   resolveReference(base: string, reference: string) {
