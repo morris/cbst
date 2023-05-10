@@ -1,18 +1,22 @@
 import { CacheBusterCli } from '../src';
 
 describe('The Cli', () => {
-  const inputDir = 'test/fixtures/example/in';
-  const outputDir = 'test/fixtures/example/out';
+  const inputDir = 'test/fixtures/all/in';
+  const outputDir = 'test/fixtures/all/out';
 
   const cli = new CacheBusterCli();
 
-  const mockLog = jest.spyOn(console, 'log').mockImplementation();
-  const mockError = jest.spyOn(console, 'error').mockImplementation();
+  const mockLog = jest.spyOn(console, 'log');
+  const mockError = jest.spyOn(console, 'error');
 
-  beforeEach(() => jest.resetAllMocks());
+  beforeEach(() => {
+    jest.resetAllMocks();
+    mockLog.mockImplementation();
+    mockError.mockImplementation();
+  });
 
-  it('should be able to run', async () => {
-    expect(await cli.run([inputDir, outputDir])).toEqual(0);
+  it('should be able to run without config', async () => {
+    expect(await cli.run([inputDir, outputDir])).toEqual(1);
   });
 
   it('should print usage if --help is passed', async () => {
@@ -41,13 +45,20 @@ describe('The Cli', () => {
     expect(mockError).toBeCalledWith('"dynamic" must be an array of strings');
   });
 
-  it('should run with valid config', async () => {
+  it('should run with valid config but fail because of unresolved references', async () => {
     expect(
       await cli.run([
         inputDir,
         outputDir,
         'test/fixtures/all/config.valid.json',
       ])
+    ).toEqual(1);
+  });
+
+  it('should run successfully with the right config', async () => {
+    expect(
+      await cli.run([inputDir, outputDir, 'test/fixtures/all/config.pass.json'])
     ).toEqual(0);
+    expect(mockError).toBeCalledTimes(0);
   });
 });

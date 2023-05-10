@@ -1,0 +1,5 @@
+{
+  "exclude": ["ignored", "*.ignored.svg", "obscure.html", "obscure.js", "example.com"],
+  "dynamic": ["*.html", "sw.js"],
+  "hashLength": 12
+}

@@ -1,5 +1,11 @@
 # Changelog
 
+# 0.2.2
+
+- Fix CLI exit code
+- Fix `exclude` not excluding some references
+- Fix identification of external references
+
 # 0.2.1
 
 - Ignore `mailto:` and other protocols properly

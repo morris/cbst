@@ -5,6 +5,7 @@ describe('The Builder', () => {
   const options = {
     inputDir: 'test/fixtures/all/in',
     outputDir: 'test/fixtures/all/out',
+    exclude: ['example.com'],
   };
 
   beforeEach(() => {
@@ -75,6 +76,11 @@ describe('The Builder', () => {
     <meta charset="utf-8" />
     <title>Hello World</title>
     <link rel="stylesheet" href="./styles/main.206eafe2ce.css" />
+    <script
+      defer
+      data-domain="example.com"
+      src="https://thirdparty.io/js/script.js"
+    ></script>
   </head>
   <body>
     <h1>Test</h1>
@@ -119,5 +125,29 @@ describe('The Builder', () => {
     await cb.run();
 
     expect(errors).toEqual([]);
+  });
+
+  describe('should correctly identify external references', () => {
+    const cb = new CacheBuster({
+      inputDir: 'test/fixtures/example/in',
+      outputDir: 'test/fixtures/example/out',
+    });
+
+    const table: [string, boolean][] = [
+      ['http://test', true],
+      ['http://example.com', true],
+      ['file://test.exe', true],
+      ['//test.exe', true],
+      ['http+x://test.exe', true],
+      ['mailto:me@example.com', true],
+      ['ftp-my-breh:upload', true],
+      ['ftp+my.breh:upload', true],
+      ['scripts/test.js', false],
+      ['./styles/main.css', false],
+    ];
+
+    it.each(table)('(%s %s)', (reference, result) => {
+      expect(cb.isExternalReference(reference)).toEqual(result);
+    });
   });
 });
