@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.1
+
+- Fix binary
+
 ## 1.0.0
 
 - BREAKING
