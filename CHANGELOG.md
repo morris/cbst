@@ -1,6 +1,6 @@
 # Changelog
 
-## NEXT
+## 1.0.0
 
 - BREAKING
   - Add `*.json` to default source file patterns
