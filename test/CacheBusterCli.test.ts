@@ -21,17 +21,17 @@ describe('The Cli', () => {
 
   it('should print usage if --help is passed', async () => {
     expect(await cli.run(['--help'])).toEqual(0);
-    expect(mockLog).toBeCalledWith(cli.help());
+    expect(mockLog).toHaveBeenCalledWith(cli.help());
   });
 
   it('should fail if no arguments are given', async () => {
     expect(await cli.run([])).toEqual(1);
-    expect(mockError).toBeCalledWith('No input directory given');
+    expect(mockError).toHaveBeenCalledWith('No input directory given');
   });
 
   it('should fail if no output dir is given', async () => {
     expect(await cli.run([inputDir])).toEqual(1);
-    expect(mockError).toBeCalledWith('No output directory given');
+    expect(mockError).toHaveBeenCalledWith('No output directory given');
   });
 
   it('should fail with invalid config', async () => {
@@ -40,9 +40,11 @@ describe('The Cli', () => {
         inputDir,
         outputDir,
         'test/fixtures/all/config.invalid.json',
-      ])
+      ]),
     ).toEqual(1);
-    expect(mockError).toBeCalledWith('"dynamic" must be an array of strings');
+    expect(mockError).toHaveBeenCalledWith(
+      '"dynamic" must be an array of strings',
+    );
   });
 
   it('should run with valid config but fail because of unresolved references', async () => {
@@ -51,14 +53,18 @@ describe('The Cli', () => {
         inputDir,
         outputDir,
         'test/fixtures/all/config.valid.json',
-      ])
+      ]),
     ).toEqual(1);
   });
 
   it('should run successfully with the right config', async () => {
     expect(
-      await cli.run([inputDir, outputDir, 'test/fixtures/all/config.pass.json'])
+      await cli.run([
+        inputDir,
+        outputDir,
+        'test/fixtures/all/config.pass.json',
+      ]),
     ).toEqual(0);
-    expect(mockError).toBeCalledTimes(0);
+    expect(mockError).toHaveBeenCalledTimes(0);
   });
 });

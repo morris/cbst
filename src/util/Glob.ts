@@ -36,7 +36,7 @@ export class Glob {
           return '(/.+?/|/)';
         } else if (groups[1]) {
           throw new Error(
-            `Invalid glob pattern ${pattern}; double star must be enclosed by slashes`
+            `Invalid glob pattern ${pattern}; double star must be enclosed by slashes`,
           );
         } else if (groups[2]) {
           // slash-free wildcard

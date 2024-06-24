@@ -93,7 +93,7 @@ describe('The Builder', () => {
     </script>
   </body>
 </html>
-`
+`,
     );
 
     expect(errors).toEqual([]);

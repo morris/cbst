@@ -74,25 +74,25 @@ The configuration file (JSON) supports the following properties:
   - Defaults to `[]`.
 - `source`
   - List of file patterns to treat as sources with references to other files.
-  - Defaults to `['*.html', '*.css', '*.js', '*.svg']`.
+  - Defaults to `["*.html", "*.css", "*.js", "*.svg", "*.json"]`.
 - `html`
   - List of file patterns to treat as HTML.
-  - Defaults to `['*.html']`.
+  - Defaults to `["*.html"]`.
 - `dynamic`
   - List of file patterns to treat as dynamic.
   - Matching files will not be versioned.
   - References from matching source files will be still be rewritten.
-  - Defaults to `['*.html']`.
-- `manifest`
-  - Manifest filename.
-  - Defaults to `'.manifest.json'`.
+  - Defaults to `["*.html"]`.
+- `metadata`
+  - Metadata filename.
+  - Defaults to `.cbst.json`.
 - `hashLength`
   - Length of hashes in versioned filenames.
   - Defaults to `10`.
 
 File patterns support `*` (slash-free wildcards) and `/**/` (directory wildcards).
 
-## Versioning and references
+## Versioning and References
 
 As `cbst` transforms files, it also rewrites any references to other versioned files.
 References are detected by scanning source files for **quoted strings** that
@@ -106,7 +106,7 @@ the reference is rewritten with the versioned filename.
 
 If a reference cannot be resolved to a file, the reference is not modified.
 
-## Static vs. dynamic files
+## Static vs. Dynamic Files
 
 **Static files** (not listed in `dynamic`) will be versioned based on a hash
 of their contents, as well as the contents of any referenced files.

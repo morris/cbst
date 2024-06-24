@@ -9,35 +9,41 @@
   ],
   "author": "Morris Brodersen <mb@morrisbrodersen.de>",
   "license": "ISC",
+  "homepage": "https://github.com/morris/cbst",
   "repository": {
     "type": "git",
-    "url": "https://github.com/morris/cbst.git"
+    "url": "git+https://github.com/morris/cbst.git"
+  },
+  "bugs": {
+    "url": "https://github.com/morris/cbst/issues"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=20"
   },
+  "type": "module",
   "files": [
     "dist"
   ],
-  "main": "dist/index.js",
-  "bin": "dist/bin.js",
+  "exports": "./dist/index.js",
+  "bin": {
+    "cbst": "dist/bin.js"
+  },
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
     "clean": "rm -rf coverage dist test/fixtures/out",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format-check": "prettier --check .",
-    "test": "jest --runInBand --coverage",
-    "maybe-publish": "bash scripts/maybe-publish.sh"
+    "test": "jest --runInBand --coverage"
   },
   "devDependencies": {
     "@types/jest": "^29.1.2",
-    "@types/node": "^14.18.31",
-    "@typescript-eslint/eslint-plugin": "^5.23.0",
-    "@typescript-eslint/parser": "^5.23.0",
+    "@types/node": "^20.14.8",
+    "@typescript-eslint/eslint-plugin": "^7.13.1",
+    "@typescript-eslint/parser": "^7.13.1",
     "eslint": "^8.15.0",
     "jest": "^29.1.2",
-    "prettier": "^2.6.2",
+    "prettier": "^3.3.2",
     "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4"

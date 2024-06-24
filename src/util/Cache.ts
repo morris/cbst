@@ -1,9 +1,7 @@
-export type CacheFn<T> = (key: string) => Promise<T>;
-
 export class Cache<T> {
   protected map = new Map<string, Promise<T>>();
 
-  constructor(protected fn: CacheFn<T>) {}
+  constructor(protected fn: (key: string) => Promise<T>) {}
 
   get(key: string) {
     const cached = this.map.get(key);

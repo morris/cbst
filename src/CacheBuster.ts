@@ -15,7 +15,7 @@ export interface CacheBusterConfig {
 
   /**
    * List of file patterns to treat as source files with references.
-   * Defaults to `['*.html', '*.css', '*.js', '*.svg']`.
+   * Defaults to `['*.html', '*.css', '*.js', '*.svg', '*.json']`.
    */
   source?: string[];
 
@@ -32,10 +32,10 @@ export interface CacheBusterConfig {
   dynamic?: string[];
 
   /**
-   * Manifest filename.
-   * Defaults to `'.manifest.json'`
+   * Metadata filename.
+   * Defaults to `'.cbst.json'`
    */
-  manifest?: string;
+  metadata?: string;
 
   /**
    * Length of hashes in versioned filenames.
@@ -59,10 +59,10 @@ export interface CacheBusterOptions extends CacheBusterConfig {
 export class CacheBuster extends EventEmitter {
   public static defaultConfig: Required<CacheBusterConfig> = {
     exclude: [],
-    source: ['*.html', '*.css', '*.js', '*.svg'],
+    source: ['*.html', '*.css', '*.js', '*.svg', '*.json'],
     html: ['*.html'],
     dynamic: ['*.html'],
-    manifest: '.manifest.json',
+    metadata: '.cbst.json',
     hashLength: 10,
   };
 
@@ -72,7 +72,7 @@ export class CacheBuster extends EventEmitter {
   protected sourceGlob: Glob;
   protected htmlGlob: Glob;
   protected dynamicGlob: Glob;
-  protected manifest: string;
+  protected metadata: string;
   protected hashLength: number;
 
   protected hashFileCache = new Cache((file) => this.hashFile(file));
@@ -100,19 +100,19 @@ export class CacheBuster extends EventEmitter {
     this.sourceGlob = new Glob(o.source);
     this.htmlGlob = new Glob(o.html);
     this.dynamicGlob = new Glob(o.dynamic);
-    this.manifest = o.manifest;
+    this.metadata = o.metadata;
     this.hashLength = o.hashLength;
   }
 
   async run() {
     await this.handleDir('.');
-    await this.writeManifest();
+    await this.writeMetadata();
   }
 
-  async writeManifest() {
+  async writeMetadata() {
     await this.writeFile(
-      this.manifest,
-      JSON.stringify({ map: Object.fromEntries(this.map.entries()) })
+      this.metadata,
+      JSON.stringify({ map: Object.fromEntries(this.map.entries()) }),
     );
   }
 
@@ -140,7 +140,7 @@ export class CacheBuster extends EventEmitter {
     const outputFile = hash
       ? file.replace(
           this.extensionRx,
-          (extension) => `${this.formatVersion(hash)}.${extension}`
+          (extension) => `${this.formatVersion(hash)}.${extension}`,
         )
       : file;
 
@@ -167,8 +167,8 @@ export class CacheBuster extends EventEmitter {
           this.handleReferenceError(err, file, reference);
 
           return undefined;
-        })
-      )
+        }),
+      ),
     );
     const source = buffer.toString();
 
@@ -188,12 +188,12 @@ export class CacheBuster extends EventEmitter {
 
       if (groups[10]) {
         return `# sourceMappingURL=${filename}.${this.formatVersion(
-          hash
+          hash,
         )}.${extension}`;
       }
 
       return `${quote}${filename}.${this.formatVersion(
-        hash
+        hash,
       )}.${extension}${quote}`;
     });
   }
@@ -218,8 +218,8 @@ export class CacheBuster extends EventEmitter {
           this.handleReferenceError(err, file, it);
 
           return '';
-        })
-      )
+        }),
+      ),
     );
 
     const deep = await Promise.all(
@@ -228,8 +228,8 @@ export class CacheBuster extends EventEmitter {
           this.handleReferenceError(err, file, it);
 
           return [];
-        })
-      )
+        }),
+      ),
     );
 
     return [...direct, ...deep.flat()];
@@ -344,7 +344,7 @@ export class CacheBuster extends EventEmitter {
 
     if (s.indexOf(rootDir) !== 0) {
       throw new Error(
-        `Trying to access file outside of ${rootDir}: ${candidate}`
+        `Trying to access file outside of ${rootDir}: ${candidate}`,
       );
     }
 
