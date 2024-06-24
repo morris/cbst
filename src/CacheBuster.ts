@@ -2,9 +2,9 @@ import { createHash } from 'crypto';
 import EventEmitter from 'events';
 import { promises as fs } from 'fs';
 import { posix as path } from 'path';
-import { ReferenceError } from './ReferenceError';
-import { Cache } from './util/Cache';
-import { Glob } from './util/Glob';
+import { ReferenceError } from './ReferenceError.js';
+import { Cache } from './util/Cache.js';
+import { Glob } from './util/Glob.js';
 
 export interface CacheBusterConfig {
   /**

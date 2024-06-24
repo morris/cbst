@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { CacheBusterCli } from './CacheBusterCli';
+import { CacheBusterCli } from './CacheBusterCli.js';
 
 const cli = new CacheBusterCli();
 

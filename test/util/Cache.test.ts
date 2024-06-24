@@ -1,4 +1,4 @@
-import { Cache } from '../../src/util/Cache';
+import { Cache } from '../../src/util/Cache.js';
 
 describe('A Cache', () => {
   it('should be able to cache', async () => {

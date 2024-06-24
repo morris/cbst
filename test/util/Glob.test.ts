@@ -1,4 +1,4 @@
-import { Glob } from '../../src/util/Glob';
+import { Glob } from '../../src/util/Glob.js';
 
 describe('A Glob', () => {
   it('should be able to match files', () => {

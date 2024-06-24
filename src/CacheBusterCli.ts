@@ -1,8 +1,8 @@
 import { promises as fs } from 'fs';
-import { CacheBuster, CacheBusterConfig } from './CacheBuster';
-import { ConsoleLike } from './util/ConsoleLike';
-import { isRecord } from './util/isRecord';
-import { isStringArray } from './util/isStringArray';
+import { CacheBuster, CacheBusterConfig } from './CacheBuster.js';
+import { ConsoleLike } from './util/ConsoleLike.js';
+import { isRecord } from './util/isRecord.js';
+import { isStringArray } from './util/isStringArray.js';
 
 export class CacheBusterCli {
   constructor(protected console: ConsoleLike = global.console) {}
