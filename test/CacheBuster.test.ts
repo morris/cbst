@@ -1,6 +1,8 @@
+import assert from 'node:assert';
+import { beforeEach, describe, it } from 'node:test';
 import { CacheBuster } from '../src';
 
-describe('The Builder', () => {
+describe('CacheBuster', () => {
   const errors: Error[] = [];
   const options = {
     inputDir: 'test/fixtures/all/in',
@@ -12,64 +14,65 @@ describe('The Builder', () => {
     errors.length = 0;
   });
 
-  it('should be able to get the base of HTML files', async () => {
+  it('gets the base of HTML files', async () => {
     const cb = new CacheBuster(options);
 
     cb.on('error', (err) => errors.push(err));
 
-    expect(await cb.getBase('index.html')).toEqual('.');
-    expect(await cb.getBase('base/base.html')).toEqual('/');
+    assert.deepStrictEqual(await cb.getBase('index.html'), '.');
+    assert.deepStrictEqual(await cb.getBase('base/base.html'), '/');
 
-    expect(errors).toEqual([]);
+    assert.deepStrictEqual(errors, []);
   });
 
-  it('should be able to get references of HTML files', async () => {
+  it('gets references of HTML files', async () => {
     const cb = new CacheBuster(options);
 
     cb.on('error', (err) => errors.push(err));
 
-    expect(await cb.getReferences('index.html')).toEqual([
+    assert.deepStrictEqual(await cb.getReferences('index.html'), [
       'styles/main.css',
       'assets/test.svg',
       'scripts/main.js',
     ]);
 
-    expect(await cb.getReferences('base/base.html')).toEqual([
+    assert.deepStrictEqual(await cb.getReferences('base/base.html'), [
       'styles/main.css',
       'assets/test.svg',
       'scripts/main.js',
     ]);
 
-    expect(errors).toEqual([]);
+    assert.deepStrictEqual(errors, []);
   });
 
-  it('should be able to get references of JS files', async () => {
+  it('gets references of JS files', async () => {
     const cb = new CacheBuster(options);
 
     cb.on('error', (err) => errors.push(err));
 
-    expect(await cb.getReferences('scripts/main.js')).toEqual([
+    assert.deepStrictEqual(await cb.getReferences('scripts/main.js'), [
       'scripts/lib.js',
       'sw.js',
     ]);
 
-    expect(await cb.getReferences('scripts/lib.js')).toEqual([]);
+    assert.deepStrictEqual(await cb.getReferences('scripts/lib.js'), []);
 
-    expect(await cb.getReferences('scripts/circular/a.js')).toEqual([
+    assert.deepStrictEqual(await cb.getReferences('scripts/circular/a.js'), [
       'scripts/circular/b.js',
     ]);
 
-    expect(errors).toEqual([]);
+    assert.deepStrictEqual(errors, []);
   });
 
-  it('should be able to transform HTML files', async () => {
+  it('transforms HTML files', async () => {
     const cb = new CacheBuster(options);
 
     cb.on('error', (err) => errors.push(err));
 
     const result = await cb.transformFile('index.html');
 
-    expect(result.toString()).toEqual(
+    assert.deepStrictEqual(
+      result.toString(),
       `<!DOCTYPE html>
 <html lang="en">
   <head>
@@ -96,25 +99,31 @@ describe('The Builder', () => {
 `,
     );
 
-    expect(errors).toEqual([]);
+    assert.deepStrictEqual(errors, []);
   });
 
-  it('should be able to run', async () => {
+  it('works', async (t) => {
+    const mockError = t.mock.method(console, 'error');
+    mockError.mock.mockImplementation(() => {});
+
     const cb = new CacheBuster(options);
 
     cb.on('error', (err) => errors.push(err));
 
     await cb.run();
 
-    expect(errors.map((err) => err.message)).toEqual([
-      'Could not resolve wut.jpg from obscure.html',
-      'Could not resolve 404.js from obscure.html',
-      'Could not resolve ..jpg from obscure.html',
-      'Could not resolve test..jpg from obscure.html',
-    ]);
+    assert.deepStrictEqual(
+      errors.map((err) => err.message),
+      [
+        'Could not resolve wut.jpg from obscure.html',
+        'Could not resolve 404.js from obscure.html',
+        'Could not resolve ..jpg from obscure.html',
+        'Could not resolve test..jpg from obscure.html',
+      ],
+    );
   });
 
-  it('should be able to run the example', async () => {
+  it('works with the example', async () => {
     const cb = new CacheBuster({
       inputDir: 'test/fixtures/example/in',
       outputDir: 'test/fixtures/example/out',
@@ -124,10 +133,10 @@ describe('The Builder', () => {
 
     await cb.run();
 
-    expect(errors).toEqual([]);
+    assert.deepStrictEqual(errors, []);
   });
 
-  describe('should correctly identify external references', () => {
+  describe('correctly identifies external references', () => {
     const cb = new CacheBuster({
       inputDir: 'test/fixtures/example/in',
       outputDir: 'test/fixtures/example/out',
@@ -146,8 +155,10 @@ describe('The Builder', () => {
       ['./styles/main.css', false],
     ];
 
-    it.each(table)('(%s %s)', (reference, result) => {
-      expect(cb.isExternalReference(reference)).toEqual(result);
-    });
+    for (const [reference, result] of table) {
+      it(`(${reference} ${result})`, () => {
+        assert.deepStrictEqual(cb.isExternalReference(reference), result);
+      });
+    }
   });
 });

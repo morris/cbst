@@ -1,7 +1,9 @@
+import assert from 'node:assert';
+import { describe, it } from 'node:test';
 import { Cache } from '../../src/util/Cache.js';
 
-describe('A Cache', () => {
-  it('should be able to cache', async () => {
+describe('Cache', () => {
+  it('caches', async () => {
     const data: Record<string, number> = { a: 1, b: 2, c: 3 };
     const cache = new Cache(async (key: string) => data[key]++);
 
@@ -14,8 +16,8 @@ describe('A Cache', () => {
       cache.get('c'),
     ]);
 
-    expect(data).toEqual({ a: 2, b: 3, c: 4 });
-    expect(received).toEqual([1, 2, 3, 2, 1, 3]);
-    expect(await cache.get('b')).toEqual(2);
+    assert.deepStrictEqual(data, { a: 2, b: 3, c: 4 });
+    assert.deepStrictEqual(received, [1, 2, 3, 2, 1, 3]);
+    assert.deepStrictEqual(await cache.get('b'), 2);
   });
 });

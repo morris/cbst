@@ -1,12 +1,17 @@
+import assert from 'node:assert';
+import { describe, it } from 'node:test';
 import { Glob } from '../../src/util/Glob.js';
 
-describe('A Glob', () => {
-  it('should be able to match files', () => {
+describe('Glob', () => {
+  it('matches files', () => {
     const glob = new Glob(['*.html', '*.css', '*.js', '!/test.html']);
 
     const shouldMatch = ['/index.html', '/styles/main.css', '/scripts/main.js'];
 
-    expect(shouldMatch.filter((file) => glob.match(file))).toEqual(shouldMatch);
+    assert.deepStrictEqual(
+      shouldMatch.filter((file) => glob.match(file)),
+      shouldMatch,
+    );
 
     const shouldNotMatch = [
       '/logo.svg',
@@ -15,10 +20,13 @@ describe('A Glob', () => {
       '/test.html',
     ];
 
-    expect(shouldNotMatch.filter((file) => glob.match(file))).toEqual([]);
+    assert.deepStrictEqual(
+      shouldNotMatch.filter((file) => glob.match(file)),
+      [],
+    );
   });
 
-  it('should be able to match directory wildcards', () => {
+  it('matches directory wildcards', () => {
     const glob = new Glob([
       '*.html',
       'styles/**/*.css',
@@ -39,7 +47,10 @@ describe('A Glob', () => {
       '/abs/folder/another/test.js',
     ];
 
-    expect(shouldMatch.filter((file) => glob.match(file))).toEqual(shouldMatch);
+    assert.deepStrictEqual(
+      shouldMatch.filter((file) => glob.match(file)),
+      shouldMatch,
+    );
 
     const shouldNotMatch = [
       '/logo.svg',
@@ -49,15 +60,18 @@ describe('A Glob', () => {
       '/any',
     ];
 
-    expect(shouldNotMatch.filter((file) => glob.match(file))).toEqual([]);
+    assert.deepStrictEqual(
+      shouldNotMatch.filter((file) => glob.match(file)),
+      [],
+    );
   });
 
-  it('should not match files ending with given non-wildcard patterns', () => {
+  it('does not match files ending with given non-wildcard patterns', () => {
     const glob = new Glob(['test.html']);
 
-    expect(glob.match('test.html')).toEqual(true);
-    expect(glob.match('foo/test.html')).toEqual(true);
-    expect(glob.match('mytest.html')).toEqual(false);
-    expect(glob.match('foo/mytest.html')).toEqual(false);
+    assert.deepStrictEqual(glob.match('test.html'), true);
+    assert.deepStrictEqual(glob.match('foo/test.html'), true);
+    assert.deepStrictEqual(glob.match('mytest.html'), false);
+    assert.deepStrictEqual(glob.match('foo/mytest.html'), false);
   });
 });
