@@ -1,5 +1,10 @@
 # Changelog
 
+## NEXT
+
+- Migrate tests to `node:test`
+- Update dependencies
+
 ## 1.0.1
 
 - Fix binary
