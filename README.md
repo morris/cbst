@@ -168,8 +168,11 @@ optimization in the first place.
 
 > What about minification?
 
-It's out of scope. There are too many options to consider, and any integration
-with minifiers will probably result in config/plug-in hell.
+It's out of scope for `cbst`. There are too many options to consider, and any
+integration with minifiers will probably result in config/plug-in hell.
+
+Instead, websites should be minified in a separate pass during a production
+build, usually before cache busting.
 
 > Why is this implemented with regular expressions? Everyone knows you can't
 > parse HTML, CSS, and JS like that!!1
