@@ -81,7 +81,7 @@ The configuration file (JSON) supports the following properties:
 - `dynamic`
   - List of file patterns to treat as dynamic.
   - Matching files will not be versioned.
-  - References from matching source files will be still be rewritten.
+  - References found in matching source files will be still be rewritten.
   - Defaults to `["*.html"]`.
 - `metadata`
   - Metadata filename.
@@ -90,27 +90,29 @@ The configuration file (JSON) supports the following properties:
   - Length of hashes in versioned filenames.
   - Defaults to `10`.
 
-File patterns support `*` (slash-free wildcards) and `/**/` (directory wildcards).
+File patterns support `*` (slash-free wildcards) and `/**/` (directory
+wildcards).
 
 ## Versioning and References
 
-As `cbst` transforms files, it also rewrites any references to other versioned files.
-References are detected by scanning source files for **quoted strings** that
+As `cbst` transforms files, it also rewrites any references to other versioned
+files. References are detected by scanning source files for **quoted strings**
+that
 
 - are double- or single-quoted,
 - contain no whitespace or quotes,
 - and have a file extension.
 
-If a reference can be resolved to a file, and that file is not `dynamic`,
-the reference is rewritten with the versioned filename.
+If a reference can be resolved to a file, and that file is not `dynamic`, the
+reference is rewritten with the versioned filename.
 
 If a reference cannot be resolved to a file, the reference is not modified.
 
 ## Static vs. Dynamic Files
 
-**Static files** (not listed in `dynamic`) will be versioned based on a hash
-of their contents, as well as the contents of any referenced files.
-Circular references are resolved deterministically.
+**Static files** (not listed in `dynamic`) will be versioned based on a hash of
+their contents, as well as the contents of any referenced files. Circular
+references are resolved deterministically.
 
 Static files should be delivered with a `Cache-Control` header that allows
 browsers and proxies to cache them indefinitely. For example:
@@ -120,14 +122,14 @@ Cache-Control: public, max-age=31536000, immutable
 ```
 
 **Dynamic files** (those listed in `dynamic`) will not be versioned, but any
-references detected will be rewritten if necessary. For example,
-`*.html` files are usually be marked dynamic because they are directly
+references detected inside these files will be rewritten if necessary. For
+example, `*.html` files are usually be marked dynamic because they are directly
 visited, not indirectly requested like other files.
 
-Dynamic files should be delivered with a `Cache-Control` header that
-requires browsers and proxies to revalidate the file in a timely fashion.
-Additional `E-Tag` or `Last-Modified` headers should be provided to
-allow conditional requests. For example:
+Dynamic files should be delivered with a `Cache-Control` header that requires
+browsers and proxies to revalidate the file in a timely fashion. Additional
+`E-Tag` or `Last-Modified` headers should be provided to allow conditional
+requests. For example:
 
 ```
 Cache-Control: public, max-age=604800, stale-while-revalidate=86400
@@ -141,16 +143,16 @@ See also
 
 ## Discussion
 
-> I can't use my favorite libraries from NPM with this because they require Node.js resolution and/or bundling.
+> I can't use my favorite libraries from NPM with this because they require
+> Node.js resolution and/or bundling.
 
-Chicken & egg problem here.
-The industry got used to bundlers and started building libraries for the web
-assuming that everyone uses a bundler.
+Chicken and egg problem here. The industry got used to bundlers and started
+building libraries for the web assuming that everyone used a bundler.
 
-Ask library authors to ship standard ESM modules.
-That will make all our lives easier.
+Ask library authors to ship standard ESM modules. That will make all our lives
+easier.
 
-> Isn't bundling still more performant larger websites?
+> Isn't bundling still more performant for larger websites?
 
 You should be fine if your website is delivered via HTTP/2 with compression and
 solid cache control.
@@ -158,21 +160,19 @@ solid cache control.
 For recurring users, bundled websites that are modified regularly require
 downloading/parsing the entire bundle after every modification.
 
-With fine-grained file versioning and long-term caching,
-the first page visit may suffer,
-but recurring users will have a better experience.
+With fine-grained file versioning and long-term caching, the first page visit
+may suffer, but recurring users will have a better experience.
 
 Finally, avoiding frameworks and large dependencies is a much more effective
 optimization in the first place.
 
 > What about minification?
 
-It's out of scope.
-There are too many options to consider,
-and any integration with minifiers will probably result in config/plug-in hell.
+It's out of scope. There are too many options to consider, and any integration
+with minifiers will probably result in config/plug-in hell.
 
-> Why is this implemented with regular expressions? Everyone knows you can't parse HTML, CSS, and JS like that!!1
+> Why is this implemented with regular expressions? Everyone knows you can't
+> parse HTML, CSS, and JS like that!!1
 
-It's a trade-off.
-The RegExp-based implementation is simple, fast,
-and will only fail in obscure cases (hopefully).
+It's a trade-off. The RegExp-based implementation is simple, fast, and will only
+fail in obscure cases (hopefully).
