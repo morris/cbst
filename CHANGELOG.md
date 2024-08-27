@@ -1,6 +1,6 @@
 # Changelog
 
-## NEXT
+## 2.0.0
 
 - BREAKING: Prefix version tags with `v-` for simpler detection of cache control
 - BREAKING: Don't emit metadata by default
