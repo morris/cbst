@@ -4,6 +4,7 @@
 
 - Prefix version tags with `v-` for simpler detection of cache control
 - Don't emit metadata by default
+- Update dependencies
 
 ## 1.0.2
 

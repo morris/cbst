@@ -85,7 +85,7 @@ export class CacheBuster extends EventEmitter {
 
   protected referenceRx =
     /((")(([^"\s]+)\.([a-zA-Z0-9]+))")|((')(([^'\s]+)\.([a-zA-Z0-9]+))')|# sourceMappingURL=(([^\s]+)\.([a-zA-Z0-9]+))/g;
-  protected externalReferenceRx = /^([a-zA-Z][a-zA-Z0-9+.\-]*:|\/\/)/;
+  protected externalReferenceRx = /^([a-zA-Z][a-zA-Z0-9+.-]*:|\/\/)/;
   protected baseRx = /<base[^<>]+href\s*=\s*"([^"]+)"[^<>]*>/i;
   protected extensionRx = /(?<=\.)[^.]+$/;
 
