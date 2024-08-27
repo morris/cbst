@@ -30,7 +30,7 @@
   },
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
-    "clean": "rm -rf coverage dist test/fixtures/out",
+    "clean": "rm -rf coverage dist test/fixtures/all/out test/fixtures/example/out",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format-check": "prettier --check .",
