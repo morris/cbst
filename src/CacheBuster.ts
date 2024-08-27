@@ -33,7 +33,7 @@ export interface CacheBusterConfig {
 
   /**
    * Metadata filename.
-   * Defaults to `'.cbst.json'`
+   * If omitted, no metadata file is written.
    */
   metadata?: string;
 
@@ -62,7 +62,7 @@ export class CacheBuster extends EventEmitter {
     source: ['*.html', '*.css', '*.js', '*.svg', '*.json'],
     html: ['*.html'],
     dynamic: ['*.html'],
-    metadata: '.cbst.json',
+    metadata: '',
     hashLength: 10,
   };
 
@@ -106,20 +106,26 @@ export class CacheBuster extends EventEmitter {
 
   async run() {
     await this.handleDir('.');
-    await this.writeMetadata();
+
+    if (this.metadata) {
+      await this.writeMetadata(this.metadata);
+    }
   }
 
-  async writeMetadata() {
+  async writeMetadata(file: string) {
     await this.writeFile(
-      this.metadata,
+      file,
       JSON.stringify({ map: Object.fromEntries(this.map.entries()) }),
     );
   }
 
   async handleDir(dir: string) {
-    if (this.excludeGlob.match(dir)) return undefined;
+    if (this.excludeGlob.match(dir)) {
+      return;
+    }
 
     const entries = await this.readDir(dir);
+
     entries.sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
 
     for (const entry of entries) {
@@ -132,7 +138,9 @@ export class CacheBuster extends EventEmitter {
   }
 
   async handleFile(file: string) {
-    if (this.excludeGlob.match(file)) return undefined;
+    if (this.excludeGlob.match(file)) {
+      return;
+    }
 
     const output = await this.transformFile(file);
     const hash = await this.hashFileCache.get(file);
@@ -180,26 +188,28 @@ export class CacheBuster extends EventEmitter {
       const filename = groups[3] || groups[8] || groups[11];
       const extension = groups[4] || groups[9] || groups[12];
 
-      if (!this.isResolvableReference(reference)) return match;
+      if (!this.isResolvableReference(reference)) {
+        return match;
+      }
 
       const hash = hashes[i++];
 
       if (!hash) return match;
 
+      const version = this.formatVersion(hash);
+
       if (groups[10]) {
-        return `# sourceMappingURL=${filename}.${this.formatVersion(
-          hash,
-        )}.${extension}`;
+        return `# sourceMappingURL=${filename}.${version}.${extension}`;
       }
 
-      return `${quote}${filename}.${this.formatVersion(
-        hash,
-      )}.${extension}${quote}`;
+      return `${quote}${filename}.${version}.${extension}${quote}`;
     });
   }
 
   async hashFile(file: string) {
-    if (this.dynamicGlob.match(file)) return undefined;
+    if (this.dynamicGlob.match(file)) {
+      return undefined;
+    }
 
     return this.hash([
       await this.hashRawFileCache.get(file),
@@ -208,7 +218,9 @@ export class CacheBuster extends EventEmitter {
   }
 
   async hashFileReferences(file: string, exclude: string[]): Promise<string[]> {
-    if (exclude.includes(file)) return [];
+    if (exclude.includes(file)) {
+      return [];
+    }
 
     const references = await this.getReferencesCache.get(file);
 
@@ -249,17 +261,21 @@ export class CacheBuster extends EventEmitter {
       this.unresolved.set(source, unresolved);
     }
 
-    if (unresolved.has(reference)) return;
+    if (unresolved.has(reference)) {
+      return;
+    }
 
     unresolved.add(reference);
 
     this.emit('error', new ReferenceError(error, source, reference));
   }
 
-  // references
+  // References
 
   async getReferences(file: string) {
-    if (!this.sourceGlob.match(file)) return [];
+    if (!this.sourceGlob.match(file)) {
+      return [];
+    }
 
     const buffer = await this.readFileCache.get(file);
     const source = buffer.toString();
@@ -288,7 +304,9 @@ export class CacheBuster extends EventEmitter {
   }
 
   resolveReference(base: string, reference: string) {
-    if (reference[0] === '/') return reference.slice(1);
+    if (reference[0] === '/') {
+      return reference.slice(1);
+    }
 
     return path.join(base[0] === '/' ? base.slice(1) : base, reference);
   }
@@ -299,27 +317,31 @@ export class CacheBuster extends EventEmitter {
       const source = buffer.toString();
       const match = source.match(this.baseRx);
 
-      if (match) return match[1];
+      if (match) {
+        return match[1];
+      }
     }
 
     return path.dirname(file);
   }
 
-  // hashing
+  // Hashing
 
   formatVersion(hash: string) {
-    return hash.slice(0, this.hashLength);
+    return `v-${hash.slice(0, this.hashLength)}`;
   }
 
   hash(inputs: (string | Buffer)[]) {
     const h = createHash('sha1');
 
-    for (const input of inputs) h.update(input);
+    for (const input of inputs) {
+      h.update(input);
+    }
 
     return h.digest('hex');
   }
 
-  // i/o
+  // I/O
 
   async readFile(file: string) {
     return fs.readFile(this.safePath(this.inputDir, file));

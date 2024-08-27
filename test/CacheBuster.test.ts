@@ -78,7 +78,7 @@ describe('CacheBuster', () => {
   <head>
     <meta charset="utf-8" />
     <title>Hello World</title>
-    <link rel="stylesheet" href="./styles/main.206eafe2ce.css" />
+    <link rel="stylesheet" href="./styles/main.v-206eafe2ce.css" />
     <script
       defer
       data-domain="example.com"
@@ -87,10 +87,10 @@ describe('CacheBuster', () => {
   </head>
   <body>
     <h1>Test</h1>
-    <p><img src="./assets/test.330398492f.svg" /></p>
+    <p><img src="./assets/test.v-330398492f.svg" /></p>
     <p><a href="mailto:foo@bar.cbst">Contact</a></p>
     <script type="module">
-      import { main } from './scripts/main.f39e95e656.js';
+      import { main } from './scripts/main.v-f39e95e656.js';
 
       main();
     </script>

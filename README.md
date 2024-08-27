@@ -31,37 +31,37 @@ This diff demonstrates how versioning is applied to a simple website:
   <html>
     <head>
       <title>Hello, World!</title>
--     <link rel="stylesheet" href="/styles/main.css">
-+     <link rel="stylesheet" href="/styles/main.ed1e118152.css">
+-     <link rel="stylesheet" href="/css/main.css">
++     <link rel="stylesheet" href="/css/main.v-ed1e118152.css">
     </head>
     <body>
       <h1>Hello, World!</h1>
       <p>
--       <img id="welcome" src="/assets/loading.svg">
-+       <img id="welcome" src="/assets/loading.834ab3df39.svg">
+-       <img id="welcome" src="/img/loading.svg">
++       <img id="welcome" src="/img/loading.v-834ab3df39.svg">
       </p>
       <script type="module">
--       import { main } from './scripts/main.js';
-+       import { main } from './scripts/main.f39e95e656.js';
+-       import { main } from './js/main.js';
++       import { main } from './js/main.v-f39e95e656.js';
 
         setTimeout(main, 1000);
       </script>
     </body>
   </html>
 
-# /scripts/main.js -> /scripts/main.f39e95e656.js
+# /js/main.js -> /js/main.v-f39e95e656.js
 
 - import { hello } from './hello.js';
-+ import { hello } from './hello.93724d33b5.js';
++ import { hello } from './hello.v-93724d33b5.js';
 
   export function main() {
     hello('world');
--   document.getElementById('welcome').src = '/assets/welcome.svg';
-+   document.getElementById('welcome').src = '/assets/welcome.afe45bb832.svg';
+-   document.getElementById('welcome').src = '/img/welcome.svg';
++   document.getElementById('welcome').src = '/img/welcome.v-afe45bb832.svg';
   }
 
-# /styles/main.css -> /styles/main.ed1e118152.css
-# /scripts/hello.js -> /scripts/hello.93724d33b5.js
+# /css/main.css -> /css/main.v-ed1e118152.css
+# /js/hello.js -> /js/hello.v-93724d33b5.js
 # etc.
 ```
 
@@ -85,7 +85,7 @@ The configuration file (JSON) supports the following properties:
   - Defaults to `["*.html"]`.
 - `metadata`
   - Metadata filename.
-  - Defaults to `.cbst.json`.
+  - If omitted, no metadata file is written.
 - `hashLength`
   - Length of hashes in versioned filenames.
   - Defaults to `10`.
