@@ -84,7 +84,7 @@ The configuration file (JSON) supports the following properties:
   - References found in matching source files will be still be rewritten.
   - Defaults to `["*.html"]`.
 - `metadata`
-  - Metadata filename.
+  - Metadata filename (JSON).
   - If omitted, no metadata file is written.
 - `hashLength`
   - Length of hashes in versioned filenames.
