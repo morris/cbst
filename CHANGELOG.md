@@ -2,8 +2,8 @@
 
 ## NEXT
 
-- Prefix version tags with `v-` for simpler detection of cache control
-- Don't emit metadata by default
+- BREAKING: Prefix version tags with `v-` for simpler detection of cache control
+- BREAKING: Don't emit metadata by default
 - Update dependencies
 
 ## 1.0.2
@@ -17,10 +17,9 @@
 
 ## 1.0.0
 
-- BREAKING
-  - Add `*.json` to default source file patterns
-  - Rename `manifest` to `metadata` (defaults to `.cbst.json` now)
-  - Require Node.js >= 20
+- BREAKING: Add `*.json` to default source file patterns
+- BREAKING: Rename `manifest` to `metadata` (defaults to `.cbst.json` now)
+- BREAKING: Require Node.js >= 20
 - Update dependencies
 
 ## 0.2.2
