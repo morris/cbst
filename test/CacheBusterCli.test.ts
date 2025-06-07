@@ -1,6 +1,6 @@
 import assert from 'node:assert';
 import { describe, it } from 'node:test';
-import { CacheBusterCli } from '../src';
+import { CacheBusterCli } from '../src/CacheBusterCli.js';
 
 describe('CacheBusterCli', () => {
   const inputDir = 'test/fixtures/all/in';

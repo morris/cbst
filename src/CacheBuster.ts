@@ -1,7 +1,7 @@
-import { createHash } from 'crypto';
-import EventEmitter from 'events';
-import { promises as fs } from 'fs';
-import { posix as path } from 'path';
+import { createHash } from 'node:crypto';
+import EventEmitter from 'node:events';
+import { promises as fs } from 'node:fs';
+import { posix as path } from 'node:path';
 import { ReferenceError } from './ReferenceError.js';
 import { Cache } from './util/Cache.js';
 import { Glob } from './util/Glob.js';

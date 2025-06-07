@@ -1,4 +1,4 @@
-import { promises as fs } from 'fs';
+import { promises as fs } from 'node:fs';
 import { CacheBuster, CacheBusterConfig } from './CacheBuster.js';
 import { ConsoleLike } from './util/ConsoleLike.js';
 import { isRecord } from './util/isRecord.js';

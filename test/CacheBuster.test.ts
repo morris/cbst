@@ -1,6 +1,6 @@
 import assert from 'node:assert';
 import { beforeEach, describe, it } from 'node:test';
-import { CacheBuster } from '../src';
+import { CacheBuster } from '../src/CacheBuster.js';
 
 describe('CacheBuster', () => {
   const errors: Error[] = [];
