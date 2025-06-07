@@ -17,10 +17,10 @@
   "bugs": {
     "url": "https://github.com/morris/cbst/issues"
   },
+  "type": "module",
   "engines": {
     "node": ">=20"
   },
-  "type": "module",
   "files": [
     "dist"
   ],
